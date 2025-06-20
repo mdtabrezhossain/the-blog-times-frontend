@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: "Urbanist";
+    src: url("./assets/fonts/Urbanist-Regular.ttf") format("truetype");
+}
+
+:root {
+    --water-50: #EDF2FB;
+    --water-100: #E2EAFC;
+    --water-200: #D7E3FC;
+    --water-300: #CCDBFD;
+    --water-400: #C1D3FE;
+    --water-500: #B6CCFE;
+    --water-600: #ABC4FF;
+    --water-700: #6888fc;
+}
+
+body {
+    font-family: Urbanist;
+    background-color: var(--water-300);
+}
