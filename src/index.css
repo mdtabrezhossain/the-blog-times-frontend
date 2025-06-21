@@ -6,7 +6,6 @@
 }
 
 :root {
-    --water-50: #EDF2FB;
     --water-100: #E2EAFC;
     --water-200: #D7E3FC;
     --water-300: #CCDBFD;
@@ -14,9 +13,19 @@
     --water-500: #B6CCFE;
     --water-600: #ABC4FF;
     --water-700: #6888fc;
+
+    --ash-100: #E2E8F0;
+    --ash-200: #CBD5E1;
+    --ash-300: #94A3B8;
+    --ash-400: #64748B;
+    --ash-500: #475569;
+    --ash-600: #334155;
+    --ash-700: #1E293B;
+    --ash-800: #0F172A;
 }
 
 body {
     font-family: Urbanist;
-    background-color: var(--water-300);
+    background-color: var(--water-600);
+    background-color: var(--ash-700);
 }

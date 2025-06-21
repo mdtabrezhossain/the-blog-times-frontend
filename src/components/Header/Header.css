@@ -1,0 +1,19 @@
+header.dark {
+    background-color: var(--ash-400);
+}
+
+header h1.dark {
+    color: var(--ash-100);
+}
+
+header ul li a.dark {
+    color: var(--ash-100);
+}
+
+header ul li a.dark:hover {
+    background-color: var(--ash-500);
+}
+
+header div.dark {
+    color: var(--ash-100);
+}
