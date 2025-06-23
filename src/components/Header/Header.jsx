@@ -20,6 +20,10 @@ export default function Navbar() {
         }
     }, []);
 
+    useEffect(() => {
+        theme === "dark" ? document.body.classList.add("dark") : document.body.classList.remove("dark");
+    }, [theme])
+
     function handleWindowResize() {
         setMobileView(window.innerWidth <= 640);
     }
@@ -44,6 +48,7 @@ export default function Navbar() {
             return "bg-[var(--ash-500)] font-bold";
         }
     }
+
 
     return (
         <header className={`bg-[var(--water-100)] shadow-md transiton-all duration-300 ${theme}`} >

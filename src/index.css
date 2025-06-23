@@ -27,5 +27,9 @@
 body {
     font-family: Urbanist;
     background-color: var(--water-600);
-    /* background-color: var(--ash-700); */
+    transition: all 0.2s ease;
+}
+
+body.dark {
+    background-color: var(--ash-700);
 }

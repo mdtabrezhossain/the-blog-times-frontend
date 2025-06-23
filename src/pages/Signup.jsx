@@ -1,7 +1,12 @@
-import React from 'react'
+import React from 'react';
+import Card from '../components/signup-login-card/Card';
 
 export default function Signup() {
     return (
-        <div>Signup</div>
+        <>
+            <div className='flex justify-center items-center px-5 w-full h-135'>
+                <Card />
+            </div>
+        </>
     )
 }
