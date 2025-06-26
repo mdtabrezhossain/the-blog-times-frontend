@@ -1,6 +1,6 @@
 import React from 'react'
 import allBlogs from "../assets/json/blogs.json";
-import Card from '../components/post-cards/Card.jsx'
+import Card from '../components/blog-cards/Card.jsx'
 
 export default function Home() {
     return (

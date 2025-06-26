@@ -6,8 +6,8 @@ import { toggleThemeAction } from '../../store/slices/ThemeSlice';
 import "./Header.css"
 
 export default function Navbar() {
-    const routes = ["/", "/signup"];
-    const pages = ["Home", "Signup"];
+    const routes = ["/", "/signup", "/my-account"];
+    const pages = ["Home", "Signup", "My Account"];
     const theme = useSelector(state => state.themeReducer.theme);
     const dispatch = useDispatch();
     const [mobileView, setMobileView] = useState(window.innerWidth <= 640);
@@ -51,18 +51,20 @@ export default function Navbar() {
 
 
     return (
-        <header className={`bg-[var(--water-100)] shadow-md transiton-all duration-300 ${theme}`} >
+        <header className={`bg-[var(--water-100)] shadow-md transition-all duration-300 ${theme}`} >
             <nav className={`grid grid-cols-[1fr_1fr] items-center h-14 px-8 text-[var(--water-700)] ${theme} max-sm:px-3`}>
                 <h1 className={`font-bold text-2xl ${theme}`}>The Blog Times</h1>
-                <div className='flex justify-end gap-5'>
+                <div className='flex justify-end gap-5 items-center'>
                     <ul
                         id="navbarOptions"
                         onClick={handleHamMenuClick}
                         className={`flex justify-end gap-6 max-sm:flex-col max-sm:justify-center max-sm:items-center max-sm:gap-0 max-sm:overflow-y-auto max-sm:fixed max-sm:h-screen max-sm:w-screen max-sm:inset-0 max-sm:z-50 max-sm:bg-black/50 max-sm:backdrop-blur-md transition-all duration-300 ${hamMenuOpen ? "max-sm:opacity-100 max-sm:pointer-events-auto" : "max-sm:opacity-0 max-sm:pointer-events-none"}`}
                     >
-
                         {
                             routes.map((route, i) => {
+                                if (route === "/my-account" && !mobileView) {
+                                    return null;
+                                }
                                 return (
                                     <li key={route} className="transition-all duration-200 max-sm:grid max-sm:text-center max-sm:w-full">
                                         <NavLink
@@ -71,11 +73,13 @@ export default function Navbar() {
                                                 `${checkIsActive(isActive)} px-5 py-2 rounded text-[var(--water-700)] transition-all duration-200 hover:bg-[var(--water-500)] ${theme} max-sm:p-4`
                                             }
                                         >
-                                            {pages[i]}
+                                            {(pages[i])}
                                         </NavLink>
                                     </li>
                                 );
-                            })}
+
+                            })
+                        }
                     </ul>
                     <div onClick={handleThemeIconClick} className={`cursor-pointer transition-all duration-200 hover:scale-[1.3] ${theme}`}>
                         {
@@ -87,13 +91,23 @@ export default function Navbar() {
                     </div>
                     {
                         mobileView ?
+                            null :
+                            (
+                                <NavLink to="/my-account" className='h-[30px] w-[30px] object-cover'>
+                                    <img
+                                        src="images/default-pfp.jpg"
+                                        className='rounded-full cursor-pointer'
+                                    />
+                                </NavLink>
+                            )
+                    }
+                    {
+                        mobileView ?
                             <HamburgerMenuIcon
                                 id="hamIcon"
                                 className="h-full w-6"
                                 onClick={handleHamIconClick}
-                            />
-                            :
-                            <></>
+                            /> : null
                     }
                 </div>
             </nav>

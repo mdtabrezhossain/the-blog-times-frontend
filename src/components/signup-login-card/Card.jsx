@@ -34,7 +34,7 @@ export default function Card() {
                         </label>
                         <input
                             id='emailInput'
-                            className='w-full p-2 border-1 transition-all duration-200 hover:border-[#3e63dd] focus:outline-[#3e63dd]'
+                            className='w-full p-2 border-1 transition-all duration-200 focus:outline-[#3e63dd]'
                             type="email"
                             placeholder="Enter your email" />
                     </div>
@@ -47,7 +47,7 @@ export default function Card() {
                         </label>
                         <input
                             id='passwordInput'
-                            className='w-full p-2 border-1 transition-all duration-200 hover:border-[#3e63dd] focus:outline-[#3e63dd]'
+                            className='w-full p-2 border-1 transition-all duration-200 focus:outline-[#3e63dd]'
                             type="password"
                             placeholder='Enter your password' />
                     </div>

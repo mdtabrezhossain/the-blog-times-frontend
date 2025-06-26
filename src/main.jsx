@@ -8,10 +8,12 @@ import { Provider } from 'react-redux';
 import router from './routes';
 import { store } from './store';
 import "./index.css";
+import PageLoader from './components/page-loader/page-loader.jsx';
+
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    < Suspense fallback={< div > Loading...</div >}>
+    <Suspense fallback={<PageLoader />}>
       <RouterProvider router={router} />
     </Suspense >
   </Provider>
