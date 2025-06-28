@@ -51,14 +51,14 @@ export default function Navbar() {
 
 
     return (
-        <header className={`bg-[var(--water-100)] shadow-md transition-all duration-300 ${theme}`} >
-            <nav className={`grid grid-cols-[1fr_1fr] items-center h-14 px-8 text-[var(--water-700)] ${theme} max-sm:px-3`}>
+        <header className={`sticky top-0 z-50 bg-[var(--water-100)] transition-all duration-300 ${theme}`} >
+            <nav className={`grid grid-cols-[2fr_1fr] items-center h-14 w-full px-8 text-[var(--water-700)] ${theme} max-sm:px-4`}>
                 <h1 className={`font-bold text-2xl ${theme}`}>The Blog Times</h1>
                 <div className='flex justify-end gap-5 items-center'>
                     <ul
                         id="navbarOptions"
                         onClick={handleHamMenuClick}
-                        className={`flex justify-end gap-6 max-sm:flex-col max-sm:justify-center max-sm:items-center max-sm:gap-0 max-sm:overflow-y-auto max-sm:fixed max-sm:h-screen max-sm:w-screen max-sm:inset-0 max-sm:z-50 max-sm:bg-black/50 max-sm:backdrop-blur-md transition-all duration-300 ${hamMenuOpen ? "max-sm:opacity-100 max-sm:pointer-events-auto" : "max-sm:opacity-0 max-sm:pointer-events-none"}`}
+                        className={`flex justify-end gap-6 transition-all duration-300 max-sm:flex-col max-sm:justify-center max-sm:items-center max-sm:gap-0 max-sm:overflow-y-auto max-sm:fixed max-sm:h-screen max-sm:w-screen max-sm:inset-0 max-sm:z-50 ${theme === "light" ? `max-sm:bg-[var(--water-100)]` : `max-sm:bg-[var(--ash-700)]`} ${hamMenuOpen ? "max-sm:opacity-100 max-sm:pointer-events-auto" : "max-sm:opacity-0 max-sm:pointer-events-none"}`}
                     >
                         {
                             routes.map((route, i) => {

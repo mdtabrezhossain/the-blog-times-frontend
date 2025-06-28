@@ -5,7 +5,7 @@ export default function Signup() {
     return (
         <>
             <div className='flex justify-center items-center px-5 w-full h-135'>
-                <Card title={"Sign up"} />
+                <Card title={"Login"} />
             </div>
         </>
     )
