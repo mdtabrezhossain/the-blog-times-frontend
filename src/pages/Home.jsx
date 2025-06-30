@@ -16,6 +16,8 @@ export default function Home() {
                     allBlogs.map((blog, idx) =>
                         <Card
                             key={idx}
+                            height={450}
+                            width={300}
                             title={blog.title}
                             imageSrc={`images/${blog.image}`}
                         />
