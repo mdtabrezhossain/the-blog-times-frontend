@@ -1,8 +1,7 @@
-import React from 'react'
 import { useSelector } from 'react-redux';
 import allBlogs from "../assets/json/blogs.json";
 import Card from '../components/blog-cards/Card';
-export default function MyAccount() {
+export default function Dashboard() {
     const theme = useSelector(state => state.themeReducer.theme);
     return (
         <>
@@ -48,13 +47,11 @@ export default function MyAccount() {
                 </div>
                 <div className='flex flex-col items-center gap-10 w-1/2 pt-5 pb-5 bg-white/20 backdrop-blur-2xl rounded max-sm:w-full'>
                     <p className={`text-center text-lg font-bold ${theme === "dark" ? "text-white" : ""}`}>My Blogs</p>
-                    <div className='grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] place-items-center gap-10 p-3 w-full'>
+                    <div className='grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] place-items-center gap-10 p-5 w-full'>
                         {
                             allBlogs.map((blog, idx) =>
                                 <Card
                                     key={idx}
-                                    height={400}
-                                    width={200}
                                     title={blog.title}
                                     imageSrc={`images/${blog.image}`}
                                 />

@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { HamburgerMenuIcon, MoonIcon, SunIcon } from '@radix-ui/react-icons';
-import { toggleThemeAction } from '../../store/slices/ThemeSlice';
+import { toggleThemeAction } from '../../store/slices/ThemeSlice.js';
 import "./Header.css"
 
 export default function Navbar() {
-    const routes = ["/", "/signup", "/my-account"];
-    const pages = ["Home", "Signup", "My Account"];
+    const isUserLoggedIn = useSelector(state => state.userReducer.isUserLoggedIn);
     const theme = useSelector(state => state.themeReducer.theme);
-    const dispatch = useDispatch();
+    const pages = ["Home", `${isUserLoggedIn ? "Dashboard" : "Signup"}`];
+    const routes = ["/", `${isUserLoggedIn ? "/users/dashboard" : "/users/signup"}`];
     const [mobileView, setMobileView] = useState(window.innerWidth <= 640);
     const [hamMenuOpen, setHamMenuOpen] = useState(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         window.addEventListener("resize", handleWindowResize);
@@ -49,7 +50,6 @@ export default function Navbar() {
         }
     }
 
-
     return (
         <header className={`sticky top-0 z-50 bg-[var(--water-100)] transition-all duration-300 ${theme}`} >
             <nav className={`grid grid-cols-[2fr_1fr] items-center h-14 w-full px-8 text-[var(--water-700)] ${theme} max-sm:px-4`}>
@@ -62,7 +62,7 @@ export default function Navbar() {
                     >
                         {
                             routes.map((route, i) => {
-                                if (route === "/my-account" && !mobileView) {
+                                if (route === "/users/dashboard" && !mobileView) {
                                     return null;
                                 }
                                 return (
@@ -77,7 +77,6 @@ export default function Navbar() {
                                         </NavLink>
                                     </li>
                                 );
-
                             })
                         }
                     </ul>
@@ -90,16 +89,15 @@ export default function Navbar() {
                         }
                     </div>
                     {
-                        mobileView ?
-                            null :
+                        isUserLoggedIn && !mobileView ?
                             (
-                                <NavLink to="/my-account" className='h-[30px] w-[30px] object-cover'>
+                                <NavLink to="/users/dashboard" className='h-[30px] w-[30px] object-cover'>
                                     <img
                                         src="images/default-pfp.jpg"
                                         className='rounded-full cursor-pointer'
                                     />
                                 </NavLink>
-                            )
+                            ) : null
                     }
                     {
                         mobileView ?

@@ -6,7 +6,7 @@ const App = lazy(() => import("../App.jsx"));
 const Home = lazy(() => import("../pages/Home.jsx"));
 const Signup = lazy(() => import("../pages/Signup.jsx"));
 const Login = lazy(() => import("../pages/Login.jsx"));
-const MyAccount = lazy(() => import("../pages/MyAccount.jsx"));
+const Dashboard = lazy(() => import("../pages/Dashboard.jsx"));
 
 const router = createBrowserRouter([
     {
@@ -18,16 +18,16 @@ const router = createBrowserRouter([
                 Component: Home
             },
             {
-                path: "/signup",
+                path: "/users/signup",
                 Component: Signup
             },
             {
-                path: "/login",
+                path: "/users/login",
                 Component: Login
             },
             {
-                path: "/my-account",
-                Component: MyAccount
+                path: "/users/dashboard",
+                Component: Dashboard
             }
         ]
     }

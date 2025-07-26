@@ -1,9 +1,7 @@
-import React from 'react'
-
-export default function Card({ height, width, title, imageSrc }) {
+export default function Card({ title, imageSrc }) {
     return (
         <>
-            <div className={`flex flex-col justify-between h-[${height}px] w-[${width}px] bg-white overflow-hidden rounded-xl`}>
+            <div className={`flex flex-col justify-between h-[400px] w-[200px] bg-white overflow-hidden rounded-xl`}>
                 <img
                     src={imageSrc}
                     alt="image"
