@@ -1,17 +1,13 @@
 import { useActionState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import {
     PersonIcon,
     LockClosedIcon,
     EnvelopeClosedIcon
 } from '@radix-ui/react-icons';
-import { toggleLoginAction } from '../../store/slices/UserSlice.js';
-
 
 export default function Card({ title }) {
     const [state, formAction, isPending] = useActionState(handleFormSubmit);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     async function handleFormSubmit() {
@@ -34,7 +30,7 @@ export default function Card({ title }) {
             });
 
             if (response.status === 201) {
-                dispatch(toggleLoginAction());
+                localStorage.setItem("isLogin", "true");
                 navigate('/');
             }
             else if (response.status === 400) {
@@ -62,7 +58,9 @@ export default function Card({ title }) {
             });
 
             if (response.ok) {
-                dispatch(toggleLoginAction());
+                const { userName } = await response.json();
+                localStorage.setItem("isLogin", "true");
+                localStorage.setItem("username", userName);
                 navigate('/');
             }
             else if (response.status === 401) {

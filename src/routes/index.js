@@ -26,7 +26,7 @@ const router = createBrowserRouter([
                 Component: Login
             },
             {
-                path: "/users/dashboard",
+                path: "/users/:username/dashboard",
                 Component: Dashboard
             }
         ]

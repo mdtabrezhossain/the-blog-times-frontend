@@ -1,26 +1,149 @@
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import allBlogs from "../assets/json/blogs.json";
-import Card from '../components/blog-cards/Card';
+import Card from '../components/blog-cards/Card.jsx';
+import { Pencil1Icon, } from '@radix-ui/react-icons';
+
+
+
 export default function Dashboard() {
     const theme = useSelector(state => state.themeReducer.theme);
+    const currentURL = window.location.pathname;
+    const endIdx = currentURL.lastIndexOf("/");
+    const username = currentURL.slice(7, endIdx);
+    const [user, setUser] = useState({});
+    const [editProfile, setEditProfile] = useState(false);
+
+    async function getDashBoardData() {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${username}/dashboard/`, {
+            credentials: "include"
+        });
+
+        if (response.status === 403) {
+            alert("You are not allowed to access this url");
+            return
+        }
+        const data = await response.json();
+        console.log(data)
+        const { userName, nickName, email } = data;
+        console.log({ userName, nickName, email });
+        setUser({ userName, userNickName: nickName, userEmail: email });
+    }
+
+    function handleEditProfileBtnClick() {
+        const elements = [
+            document.getElementById("userNameInput"),
+            document.getElementById("userNickNameInput"),
+            document.getElementById("userEmailInput")
+        ];
+
+        if (!editProfile) {
+
+            for (const x of elements) {
+                x.removeAttribute("readOnly");
+                x.classList.add("border-b");
+            }
+
+            setEditProfile(true);
+            return;
+        }
+
+        for (const x of elements) {
+            console.log(x.value);
+            x.setAttribute("readOnly", "");
+            x.classList.remove("border-b");
+        }
+
+        setEditProfile(false);
+        return;
+    }
+
+    function handleProfileDetailsChange(event) {
+        const InputFieldMap = {
+            userNameInput: "userName",
+            userNickNameInput: "userNickName",
+            userEmailInput: "userEmail"
+        }
+
+        setUser((previousData) => {
+            return {
+                ...previousData,
+                [InputFieldMap[event.target.id]]: event.target.value
+            }
+        });
+    }
+
+    useEffect(() => {
+        if (username) getDashBoardData();
+    }, [username]);
+
+    if (!user) return null;
+
     return (
         <>
             <div className='flex items-start gap-5 p-5 w-full max-sm:flex-col max-sm:justify-center max-sm:items-center'>
-                <div className=' flex flex-col items-center justify-center gap-10 min-w-1/2 p-5 bg-white/20 backdrop-blur-md rounded max-sm:w-full'>
+                <div className='flex flex-col items-center justify-center gap-10 min-w-1/2 p-5 bg-white/20 backdrop-blur-md rounded max-sm:w-full'>
                     <div className='w-full bg-white rounded'>
-                        <div className='flex justify-between items-center p-5 w-full'>
-                            <div>
-                                <p className='mb-2 font-bold'>Username</p>
-                                <p className='text-sm'>Email address</p>
-                            </div>
+                        <div className='flex flex-col justify-between items-center gap-5 p-5 w-full'>
                             <img
                                 className='max-w-20 rounded-full'
                                 src="/images/default-pfp.jpg"
-                                alt="" />
+                                alt=""
+                            />
+                            <div className='flex flex-col gap-3 w-full'>
+                                <div className='flex items-center gap-1'>
+                                    <input
+                                        id='userNameInput'
+                                        className='font-bold w-full outline-none'
+                                        type='text'
+                                        value={user.userName}
+                                        placeholder='Your username here'
+                                        onChange={handleProfileDetailsChange}
+                                        readOnly
+                                    />
+                                    {editProfile ? <Pencil1Icon /> : null}
+                                </div>
+                                <div className='flex items-center gap-1'>
+                                    <input
+                                        id='userNickNameInput'
+                                        className='w-full outline-none'
+                                        type='text'
+                                        value={user.userNickName}
+                                        placeholder='Your nick name here'
+                                        onChange={handleProfileDetailsChange}
+                                        readOnly
+                                    />
+                                    {editProfile ? <Pencil1Icon /> : null}
+                                </div>
+                                <div className='flex items-center gap-1'>
+                                    <input
+                                        id='userEmailInput'
+                                        className='w-full outline-none'
+                                        type='text'
+                                        value={user.userEmail}
+                                        placeholder='Your email name here'
+                                        onChange={handleProfileDetailsChange}
+                                        readOnly
+                                    />
+                                    {editProfile ? <Pencil1Icon /> : null}
+                                </div>
+                            </div>
+
                         </div>
-                        <button className='w-full p-1 text-white bg-[#3e63dd] rounded-b-sm transition-all duration-200 hover:opacity-90 hover:cursor-pointer'>
-                            Edit profile
-                        </button>
+                        <div className='flex max-sm:flex-col max-sm:gap-1'>
+                            <button
+                                className='w-full p-1 text-white bg-[#3e63dd] transition-all duration-200 hover:opacity-50 hover:cursor-pointer hover:scale-[0.9]'
+                                onClick={handleEditProfileBtnClick}
+                            >
+                                {!editProfile ? "Edit profile" : "Save changes"}
+                            </button>
+                            <button className='w-full p-1 text-white bg-gray-700 transition-all duration-200 hover:opacity-50 hover:cursor-pointer hover:scale-[0.9]'>
+                                Log out
+                            </button>
+                            <button className='w-full p-1 text-white bg-[#ff0033] transition-all duration-200 hover:opacity-50 hover:cursor-pointer hover:scale-[0.9]'>
+                                Delete account
+                            </button>
+                        </div>
                     </div>
                     <div className='flex flex-col justify-between items-center gap-5 p-5 w-full text-sm bg-white rounded'>
                         <p className='text-lg font-bold text-center'>Post new Blog</p>

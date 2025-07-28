@@ -1,4 +1,3 @@
-import React from 'react';
 import Card from '../components/signup-login-card/Card';
 
 export default function Signup() {

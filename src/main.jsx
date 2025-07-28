@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import router from './routes';
 import { store } from './store';
 import "./index.css";
-import PageLoader from './components/page-loader/page-loader.jsx';
+import PageLoader from './components/page-loader.jsx';
 
 
 createRoot(document.getElementById('root')).render(

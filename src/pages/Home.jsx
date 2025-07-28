@@ -5,8 +5,8 @@ import Card from '../components/blog-cards/Card.jsx';
 
 export default function Home() {
     const theme = useSelector(state => state.themeReducer.theme);
-    const isUserLoggedIn = useSelector(state => state.userReducer.isUserLoggedIn);
     const [allBlogs, setAllBlogs] = useState([]);
+    const isUserLoggedIn = localStorage.getItem("isLogin");
 
     async function showFeed() {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}`, {
@@ -15,8 +15,9 @@ export default function Home() {
         });
         setAllBlogs(await response.json());
     }
+
     useEffect(() => {
-        if (isUserLoggedIn) showFeed();
+        if (isUserLoggedIn === "true") showFeed();
     }, [isUserLoggedIn]);
 
     return (
@@ -25,6 +26,7 @@ export default function Home() {
                 <h2 className="font-bold text-6xl">Discover Ideas That Spark Curiosity</h2>
                 <p className='text-xl '>Dive into different stories, smart tips, unexpected insights and beyond</p>
             </div>
+
             {
                 isUserLoggedIn ? (
                     <div className='grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] place-items-center gap-10 p-10 mt-25'>
@@ -40,6 +42,7 @@ export default function Home() {
                     </div>
                 ) : null
             }
+
         </div>
     )
 }

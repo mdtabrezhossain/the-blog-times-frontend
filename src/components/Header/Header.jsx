@@ -6,10 +6,11 @@ import { toggleThemeAction } from '../../store/slices/ThemeSlice.js';
 import "./Header.css"
 
 export default function Navbar() {
-    const isUserLoggedIn = useSelector(state => state.userReducer.isUserLoggedIn);
+    const isUserLoggedIn = localStorage.getItem("isLogin");
+    const username = localStorage.getItem("username");
     const theme = useSelector(state => state.themeReducer.theme);
-    const pages = ["Home", `${isUserLoggedIn ? "Dashboard" : "Signup"}`];
-    const routes = ["/", `${isUserLoggedIn ? "/users/dashboard" : "/users/signup"}`];
+    const pages = ["Home", `${isUserLoggedIn === "true" ? "Dashboard" : "Signup"}`];
+    const routes = ["/", `${isUserLoggedIn === "true" ? `/users/${username}/dashboard` : "/users/signup"}`];
     const [mobileView, setMobileView] = useState(window.innerWidth <= 640);
     const [hamMenuOpen, setHamMenuOpen] = useState(false);
     const dispatch = useDispatch();
@@ -51,7 +52,7 @@ export default function Navbar() {
     }
 
     return (
-        <header className={`sticky top-0 z-50 bg-[var(--water-100)] transition-all duration-300 ${theme}`} >
+        <header className={`sticky top-0 z-10 bg-[var(--water-100)] transition-all duration-300 ${theme}`} >
             <nav className={`grid grid-cols-[2fr_1fr] items-center h-14 w-full px-8 text-[var(--water-700)] ${theme} max-sm:px-4`}>
                 <h1 className={`font-bold text-2xl ${theme}`}>The Blog Times</h1>
                 <div className='flex justify-end gap-5 items-center'>
@@ -62,7 +63,7 @@ export default function Navbar() {
                     >
                         {
                             routes.map((route, i) => {
-                                if (route === "/users/dashboard" && !mobileView) {
+                                if (route === `/users/${username}/dashboard` && !mobileView) {
                                     return null;
                                 }
                                 return (
@@ -89,9 +90,9 @@ export default function Navbar() {
                         }
                     </div>
                     {
-                        isUserLoggedIn && !mobileView ?
+                        isUserLoggedIn === "true" && !mobileView ?
                             (
-                                <NavLink to="/users/dashboard" className='h-[30px] w-[30px] object-cover'>
+                                <NavLink to={`/users/${username}/dashboard`} className='h-[30px] w-[30px] object-cover'>
                                     <img
                                         src="images/default-pfp.jpg"
                                         className='rounded-full cursor-pointer'
