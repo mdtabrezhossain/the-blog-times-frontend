@@ -1,9 +1,8 @@
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import Header from './components/Header/Header.jsx';
-
+import Header from './components/header/Header.jsx';
 
 export default function App() {
-
   return (
     <>
       <Header />

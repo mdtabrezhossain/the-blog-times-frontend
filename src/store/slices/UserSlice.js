@@ -1,18 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const userSlice = createSlice({
+export const userSlice = createSlice({
     name: "user-slice",
     initialState: {
-        isUserLoggedIn: false
+        isLogin: localStorage.getItem("isLogin") === "true" ?
+            true : false,
+        username: localStorage.getItem("username") !== null ?
+            localStorage.getItem("username") : undefined
     },
     reducers: {
-        toggleLoginAction: toggleLogin
+        toggleLoginAction: toggleLogin,
+        updateUserNameAction: updateUserName
     }
 });
 
 function toggleLogin(state) {
-    state.isUserLoggedIn = state.isUserLoggedIn === false ? true : false;
+    localStorage.getItem("isLogin") === "true" ?
+        state.isLogin = true : state.isLogin = false
 }
 
-export const { toggleLoginAction } = userSlice.actions;
+function updateUserName(state) {
+    localStorage.getItem("username") !== null ?
+        state.username = localStorage.getItem("username") : state.username = undefined;
+}
+
+export const { toggleLoginAction, updateUserNameAction } = userSlice.actions;
 export const userReducer = userSlice.reducer;

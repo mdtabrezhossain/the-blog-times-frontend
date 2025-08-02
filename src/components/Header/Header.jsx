@@ -6,14 +6,15 @@ import { toggleThemeAction } from '../../store/slices/ThemeSlice.js';
 import "./Header.css"
 
 export default function Navbar() {
-    const isUserLoggedIn = localStorage.getItem("isLogin");
-    const username = localStorage.getItem("username");
-    const theme = useSelector(state => state.themeReducer.theme);
-    const pages = ["Home", `${isUserLoggedIn === "true" ? "Dashboard" : "Signup"}`];
-    const routes = ["/", `${isUserLoggedIn === "true" ? `/users/${username}/dashboard` : "/users/signup"}`];
     const [mobileView, setMobileView] = useState(window.innerWidth <= 640);
     const [hamMenuOpen, setHamMenuOpen] = useState(false);
     const dispatch = useDispatch();
+    const theme = useSelector(state => state.themeReducer.theme);
+    const isLogin = useSelector(state => state.userReducer.isLogin);
+    const username = useSelector(state => state.userReducer.username);
+    const pages = ["Home", `${isLogin ? "Dashboard" : "Signup"}`];
+    const routes = ["/", `${isLogin ? `/users/${username}/dashboard` : "/users/signup"}`];
+
 
     useEffect(() => {
         window.addEventListener("resize", handleWindowResize);
@@ -50,6 +51,7 @@ export default function Navbar() {
             return "bg-[var(--ash-500)] font-bold";
         }
     }
+
 
     return (
         <header className={`sticky top-0 z-10 bg-[var(--water-100)] transition-all duration-300 ${theme}`} >
@@ -90,7 +92,7 @@ export default function Navbar() {
                         }
                     </div>
                     {
-                        isUserLoggedIn === "true" && !mobileView ?
+                        isLogin && !mobileView ?
                             (
                                 <NavLink to={`/users/${username}/dashboard`} className='h-[30px] w-[30px] object-cover'>
                                     <img

@@ -1,21 +1,24 @@
 import { useActionState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import {
     PersonIcon,
     LockClosedIcon,
     EnvelopeClosedIcon
 } from '@radix-ui/react-icons';
+import { toggleLoginAction, updateUserNameAction } from '../../store/slices/UserSlice';
 
 export default function Card({ title }) {
     const [state, formAction, isPending] = useActionState(handleFormSubmit);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     async function handleFormSubmit() {
         const userEmail = document.querySelector("#emailInput").value;
         const userPassword = document.querySelector("#passwordInput").value;
 
         if (title === "Sign up") {
-            const userName = document.querySelector("#nameInput").value;
+            const userName = document.getElementById("nameInput").value;
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/signup`, {
                 method: "POST",
                 headers: {
@@ -30,7 +33,10 @@ export default function Card({ title }) {
             });
 
             if (response.status === 201) {
+                localStorage.setItem("username", userName);
                 localStorage.setItem("isLogin", "true");
+                dispatch(updateUserNameAction());
+                dispatch(toggleLoginAction());
                 navigate('/');
             }
             else if (response.status === 400) {
@@ -59,8 +65,10 @@ export default function Card({ title }) {
 
             if (response.ok) {
                 const { userName } = await response.json();
-                localStorage.setItem("isLogin", "true");
                 localStorage.setItem("username", userName);
+                localStorage.setItem("isLogin", "true");
+                dispatch(updateUserNameAction());
+                dispatch(toggleLoginAction());
                 navigate('/');
             }
             else if (response.status === 401) {
