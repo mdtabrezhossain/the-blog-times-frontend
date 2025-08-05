@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Pencil1Icon, } from '@radix-ui/react-icons';
 import { upload } from '@imagekit/react';
 import allBlogs from "../assets/json/blogs.json";
+import { toggleLoginAction, updateUserNameAction } from '../store/slices/UserSlice.js';
+import PostBlogForm from '../components/PostBlogForm.jsx';
 import Card from '../components/blog-cards/Card.jsx';
 import Modal from '../components/Modal.jsx';
-import { toggleLoginAction, updateUserNameAction } from '../store/slices/UserSlice.js';
 
 
 export default function Dashboard() {
@@ -16,7 +17,8 @@ export default function Dashboard() {
         userName: null,
         userEmail: null,
         userNickName: null,
-        userPassword: null
+        userPassword: null,
+        userProfilePictureUrl: null
     });
     const [profileOptions, setProfileOptions] = useState({
         editProfile: false,
@@ -36,6 +38,7 @@ export default function Dashboard() {
         }
 
         const {
+            profilePictureUrl,
             userName,
             nickName,
             email,
@@ -44,6 +47,7 @@ export default function Dashboard() {
             publicKey,
             expire
         } = await response.json();
+
         localStorage.setItem("username", userName);
         dispatch(updateUserNameAction());
 
@@ -57,7 +61,8 @@ export default function Dashboard() {
         setUser({
             userName,
             userNickName: nickName,
-            userEmail: email
+            userEmail: email,
+            userProfilePictureUrl: profilePictureUrl
         });
     }
 
@@ -198,24 +203,38 @@ export default function Dashboard() {
 
     async function handleProfileImageUpload(event) {
         const imageFile = event.target.files[0];
-        console.log(event.target.files[0]);
         const imageKitToken = JSON.parse(sessionStorage.getItem("imageKitToken"));
-        console.log(imageKitToken);
+
         const uploadResponse = await upload({
-            fileName: imageFile.name,
+            fileName: `${username}-${Date.now()}-pfp`,
             file: imageFile,
             ...imageKitToken
         });
-        // const uploadResponse = await upload({
-        //     expire,
-        //     token,
-        //     signature,
-        //     publicKey,
-        //     imageFile,
-        // });
-        const { url } = await uploadResponse.json();
-        console.log("\n\nUpload response:", uploadResponse);
-        console.log("\n\nUpload file url:", url);
+
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${username}/dashboard/profile-picture`, {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                profilePictureUrl: uploadResponse.url
+            })
+        });
+
+        if (response.ok) {
+            setUser(prev => ({
+                ...prev,
+                userProfilePictureUrl: uploadResponse.url
+            }));
+        }
+
+        else if (response.status === 500) {
+            alert("Something went wrong on our side !")
+
+        }
+
+        return;
     }
 
     useEffect(() => {
@@ -243,7 +262,7 @@ export default function Dashboard() {
                             >
                                 <img
                                     className='max-w-25 rounded-full'
-                                    src="/images/default-pfp.jpg"
+                                    src={user.userProfilePictureUrl || "/images/default-pfp.jpg"}
                                     alt="profile picture"
                                 />
                                 <input
@@ -322,28 +341,8 @@ export default function Dashboard() {
                             </button>
                         </div>
                     </div>
-                    <div className='flex flex-col justify-between items-center gap-5 p-5 w-full text-sm bg-white rounded'>
-                        <p className='text-lg font-bold text-center'>Post new Blog</p>
-                        <form className='flex flex-col justify-center gap-5 w-full'>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                className="w-full bg-white border file:mr-5 file:p-2 file:text-white file:bg-[#3e63dd]"
-                            />
-                            <input
-                                className='p-2 bg-white outline focus:outline-[#3e63dd] focus:outline-2'
-                                type="textarea"
-                                placeholder='Title' />
-                            <textarea
-                                placeholder="Your content here"
-                                className="p-3 h-50 bg-white resize-none outline focus:outline-[#3e63dd] focus:outline-2"
-                            />
-                            <button
-                                className='py-2 px-5 text-sm font-bold text-white bg-[#3e63dd] rounded transition-all duration-200 hover:opacity-80 hover:cursor-pointer'
-                                type='submit'
-                            >Done</button>
-                        </form>
-                    </div>
+
+                    <PostBlogForm />
                 </div>
                 <div className='flex flex-col items-center gap-10 w-1/2 pt-5 pb-5 bg-white/20 backdrop-blur-2xl rounded max-sm:w-full'>
                     <p className={`text-center text-lg font-bold ${theme === "dark" ? "text-white" : ""}`}>My Blogs</p>
