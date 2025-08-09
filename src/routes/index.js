@@ -30,7 +30,7 @@ const router = createBrowserRouter([
                 Component: Dashboard
             },
             {
-                path: "/blogs/:blogid",
+                path: "/blogs/:username/:blogid",
                 Component: BigCard
             }
         ]

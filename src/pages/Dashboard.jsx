@@ -8,7 +8,7 @@ import { toggleLoginAction, updateUserNameAction } from '../store/slices/UserSli
 import PostBlogForm from '../components/PostBlogForm.jsx';
 import Card from '../components/blog-cards/Card.jsx';
 import Modal from '../components/Modal.jsx';
-
+import BlogCardsContainer from '../components/BlogCardsContainer.jsx';
 
 export default function Dashboard() {
     const theme = useSelector(state => state.themeReducer.theme);
@@ -36,6 +36,12 @@ export default function Dashboard() {
             alert("You are not allowed to access this url");
             return;
         }
+
+        // const response1 = await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/${username}/`, {
+        //     credentials: "include"
+        // });
+        // console.log(await response1.json());
+
 
         const {
             profilePictureUrl,
@@ -344,19 +350,9 @@ export default function Dashboard() {
 
                     <PostBlogForm />
                 </div>
-                <div className='flex flex-col items-center gap-10 w-1/2 pt-5 pb-5 bg-white/20 backdrop-blur-2xl rounded max-sm:w-full'>
-                    <p className={`text-center text-lg font-bold ${theme === "dark" ? "text-white" : ""}`}>My Blogs</p>
-                    <div className='grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] place-items-center gap-10 p-5 w-full'>
-                        {
-                            allBlogs.map((blog, idx) =>
-                                <Card
-                                    key={idx}
-                                    title={blog.title}
-                                    imageSrc={`images/${blog.image}`}
-                                />
-                            )
-                        }
-                    </div>
+                <div className='flex flex-col w-1/2 p-5 bg-white/20 backdrop-blur-2xl rounded max-sm:w-full'>
+                    <p className={`mb-10 text-center text-lg font-bold ${theme === "dark" ? "text-white" : ""}`}>My Blogs</p>
+                    <BlogCardsContainer url={`${import.meta.env.VITE_BACKEND_URL}/blogs/${username}`} />
                 </div>
             </div>
             {

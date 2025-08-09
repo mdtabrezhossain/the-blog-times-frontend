@@ -44,7 +44,7 @@ export default function PostBlogForm() {
         });
 
         const { blogid } = await response.json();
-        navigate(`/blogs/${blogid}`);
+        navigate(`/blogs/${username}/${blogid}`);
 
         setIsPending(prev => ({
             ...prev,
