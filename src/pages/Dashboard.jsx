@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Pencil1Icon, } from '@radix-ui/react-icons';
 import { upload } from '@imagekit/react';
-import allBlogs from "../assets/json/blogs.json";
 import { toggleLoginAction, updateUserNameAction } from '../store/slices/UserSlice.js';
 import PostBlogForm from '../components/PostBlogForm.jsx';
-import Card from '../components/blog-cards/Card.jsx';
 import Modal from '../components/Modal.jsx';
 import BlogCardsContainer from '../components/BlogCardsContainer.jsx';
 
@@ -36,12 +34,6 @@ export default function Dashboard() {
             alert("You are not allowed to access this url");
             return;
         }
-
-        // const response1 = await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/${username}/`, {
-        //     credentials: "include"
-        // });
-        // console.log(await response1.json());
-
 
         const {
             profilePictureUrl,

@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import allBlogs from "../assets/json/blogs.json"
-import Card from "./blog-cards/Card"
+import Card from "./blog-cards/Card.jsx"
 
 export default function BlogCardsContainer({ url }) {
 
   const [blogs, setBlogs] = useState([]);
-  console.log(blogs)
 
   async function fetchBlogs() {
     const response = await fetch(url, {
@@ -23,6 +21,8 @@ export default function BlogCardsContainer({ url }) {
       {
         blogs.map((blog, idx) =>
           <Card
+            blogId={blog._id}
+            authorName={blog.author.userName}
             key={idx}
             title={blog.title}
             imageSrc={blog.imageUrl}
