@@ -30,6 +30,13 @@ export default function Dashboard() {
             credentials: "include"
         });
 
+        if (response.status === 401) {
+            localStorage.removeItem("isLogin");
+            localStorage.removeItem("username");
+            dispatch(toggleLoginAction());
+            return;
+        }
+
         if (response.status === 403) {
             alert("You are not allowed to access this url");
             return;

@@ -13,6 +13,12 @@ export default function Home() {
             method: "GET",
             credentials: "include",
         });
+
+        if (response.status == 401) {
+            localStorage.removeItem("isLogin");
+            localStorage.removeItem("username");
+        }
+
         setAllBlogs(await response.json());
     }
 
@@ -42,7 +48,7 @@ export default function Home() {
                     </div>
                 ) : null
             }
-
         </div>
+
     )
 }
