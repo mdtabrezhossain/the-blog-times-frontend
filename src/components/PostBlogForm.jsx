@@ -38,6 +38,7 @@ export default function PostBlogForm() {
             },
             body: JSON.stringify({
                 imageUrl: imageUploadResponse.url,
+                imageFileId: imageUploadResponse.fileId,
                 title,
                 content
             })

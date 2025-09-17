@@ -1,7 +1,8 @@
-import { Pencil2Icon, VercelLogoIcon } from "@radix-ui/react-icons";
 import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { upload } from '@imagekit/react';
+import { Pencil2Icon } from "@radix-ui/react-icons";
 
 export default function BigCard() {
     const theme = useSelector(state => state.themeReducer.theme);
@@ -12,6 +13,7 @@ export default function BigCard() {
 
     const [blog, setBlog] = useState({
         imageUrl: null,
+        imageFileId: "",
         title: "",
         content: ""
     });
@@ -19,17 +21,19 @@ export default function BigCard() {
     const blogTitleRef = useRef(null);
     const blogContentRef = useRef(null);
     const blogImageRef = useRef(null);
+    const navigate = useNavigate();
 
     async function fetchBlog() {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/${blogParams}`, {
             method: "GET",
             credentials: "include"
-        })
+        });
 
         if (response.ok) {
-            const { imageUrl, title, content } = await response.json();
+            const { imageUrl, imageFileId, title, content } = await response.json();
             setBlog({
                 imageUrl,
+                imageFileId,
                 title,
                 content
             });
@@ -59,13 +63,21 @@ export default function BigCard() {
         });
 
         if (uploadResponse?.url) {
+            await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/${blogParams}/image`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ imageFileId: blog.imageFileId })
+            });
+
             await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/${blogParams}`, {
                 method: "PUT",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
                     newBlogImageUrl: uploadResponse.url,
                 })
@@ -73,8 +85,10 @@ export default function BigCard() {
 
             setBlog(prev => ({
                 ...setBlog,
+                imageFileId: uploadResponse.imageFileId,
                 imageUrl: uploadResponse.url
             }));
+
         }
     }
 
@@ -108,6 +122,35 @@ export default function BigCard() {
             ...prev,
             content: event.target.value
         }));
+    }
+
+    async function handleDeleteBlogBtnClick() {
+        alert("Please wait");
+
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/${blogParams}`, {
+            method: "DELETE",
+            credentials: "include"
+        });
+
+        if (response.ok) {
+            await fetch(`${import.meta.env.VITE_BACKEND_URL}/blogs/${blogParams}/image`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ imageFileId: blog.imageFileId })
+            });
+
+            alert("Blog deleted successfully");
+            navigate(`/users/${localStorage.getItem("username")}/dashboard`);
+            return;
+        }
+
+        else if (response.status === 500) {
+            alert("Something went wrong! ");
+            return;
+        }
     }
 
     useEffect(() => {
@@ -154,41 +197,48 @@ export default function BigCard() {
                             className="hidden"
                         />
                     </div>
-                    {/* {
-                        editBlog ?
-                            (<span className="absolute inset-0 flex items-center justify-center font-bold text-black opacity-0 cursor-pointer transition-all duration-300 hover:bg-white/75 hover:opacity-100">
-                                Change
-                            </span>) : null
-                    } */}
                 </div>
                 {
                     blogAuthorName === username ? (
-                        <div
-                            className="flex gap-1 p-2 text-sm self-end text-white bg-[#3e63dd] cursor-pointer"
-                            onClick={handleEditBlogBtnClick}
-                        >
-                            {
-                                editBlog ? (
-                                    <p className="px-5" onClick={handleSaveBlogBtnClick}>Save</p>
-                                ) : (
-                                    <>
-                                        <p>Edit blog</p>
-                                        <Pencil2Icon />
-                                    </>
-                                )
-                            }
-                        </div>
+                        <>
+                            <div className="flex justify-between">
+                                <div className="text-black">Author: {username}</div>
+                                <div className="flex gap-5">
+                                    <div
+                                        className="flex gap-2 p-2 text-sm self-end text-white bg-[#3e63dd] cursor-pointer"
+                                        onClick={handleEditBlogBtnClick}
+                                    >
+                                        {
+                                            editBlog ? (
+                                                <p className="px-5" onClick={handleSaveBlogBtnClick}>Save</p>
+                                            ) : (
+                                                <>
+                                                    <p>Edit blog</p>
+                                                    <Pencil2Icon />
+                                                </>
+                                            )
+                                        }
+                                    </div>
+                                    <div
+                                        className="flex gap-2 p-2 text-sm self-end text-white bg-[#ff0033] cursor-pointer"
+                                        onClick={handleDeleteBlogBtnClick}
+                                    >
+                                        Delete blog
+                                    </div>
+                                </div>
+                            </div>
+                        </>
                     ) : null
                 }
                 <textarea
-                    className="text-4xl resize-none overflow-hidden outline-0"
+                    className="text-black text-4xl resize-none overflow-hidden outline-0"
                     ref={blogTitleRef}
                     value={blog.title}
                     onChange={editBlog ? handleBlogTitleChange : undefined}
                     required
                 />
                 <textarea
-                    className="resize-none overflow-hidden outline-0"
+                    className="text-black resize-none overflow-hidden outline-0"
                     ref={blogContentRef}
                     value={blog.content}
                     onChange={editBlog ? handleBlogContentChange : undefined}
