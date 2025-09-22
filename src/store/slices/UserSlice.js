@@ -20,7 +20,7 @@ function toggleLogin(state) {
 }
 
 function updateUserName(state) {
-    localStorage.getItem("username") !== null ?
+    localStorage.getItem("username") ?
         state.username = localStorage.getItem("username") : state.username = undefined;
 }
 

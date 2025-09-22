@@ -7,7 +7,6 @@ import { toggleLoginAction, updateUserNameAction } from '../store/slices/UserSli
 import PostBlogForm from '../components/PostBlogForm.jsx';
 import Modal from '../components/Modal.jsx';
 import BlogCardsContainer from '../components/BlogCardsContainer.jsx';
-
 export default function Dashboard() {
     const theme = useSelector(state => state.themeReducer.theme);
     const username = useSelector(state => state.userReducer.username);
@@ -21,7 +20,11 @@ export default function Dashboard() {
     const [profileOptions, setProfileOptions] = useState({
         editProfile: false,
         saveChanges: false,
+        confirmPassword: false,
+        requestMethod: null,
+        dataObject: null
     });
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -109,8 +112,16 @@ export default function Dashboard() {
         setProfileOptions({
             editProfile: false,
             saveChanges: true,
-            confirmPassword: true
+            confirmPassword: true,
+            requestMethod: "PUT",
+            dataObject: {
+                newUserName: user.userName,
+                newUserEmail: user.userEmail,
+                newUserNickName: user.userNickName,
+                newUserPassword: document.getElementById("userNewPasswordInput").value,
+            }
         });
+
 
         return;
     }
@@ -131,18 +142,15 @@ export default function Dashboard() {
         });
     }
 
-    async function handlePasswordConfirmBtnClick() {
+    async function handlePasswordConfirmBtnClick(requestMethod, dataObject) {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/${username}/dashboard`, {
-            method: "PUT",
+            method: `${requestMethod}`,
             headers: {
                 "Content-Type": "application/json"
             },
             credentials: "include",
             body: JSON.stringify({
-                newUserName: user.userName,
-                newUserEmail: user.userEmail,
-                newUserNickName: user.userNickName,
-                newUserPassword: document.getElementById("userNewPasswordInput").value,
+                ...dataObject,
                 passwordToVerify: document.getElementById("passwordInput").value
             })
         });
@@ -151,6 +159,12 @@ export default function Dashboard() {
         if (response.ok) {
             localStorage.setItem("username", user.userName);
             dispatch(updateUserNameAction());
+        }
+        else if (response.ok && requestMethod === "DELETE") {
+            localStorage.removeItem("isLogin");
+            localStorage.removeItem("username");
+            dispatch(updateUserNameAction);
+            dispatch(toggleLoginAction);
         }
 
         else if (response.status === 401) {
@@ -164,13 +178,17 @@ export default function Dashboard() {
         setProfileOptions({
             editProfile: false,
             saveChanges: false,
-            confirmPassword: false
+            confirmPassword: false,
+            requestMethod: null,
+            dataObject: null
         });
 
         setUser(prev => ({
             ...prev,
             userPassword: null
         }));
+
+        navigate("/");
     }
 
     async function handlePasswordCancelBtnClick() {
@@ -240,6 +258,14 @@ export default function Dashboard() {
         }
 
         return;
+    }
+
+    function handleDeleteAccountBtnClick() {
+        setProfileOptions(prev => ({
+            ...prev,
+            confirmPassword: true,
+            requestMethod: "DELETE"
+        }));
     }
 
     useEffect(() => {
@@ -341,7 +367,10 @@ export default function Dashboard() {
                             >
                                 Log out
                             </button>
-                            <button className='w-full p-1 text-white bg-[#ff0033] transition-all duration-200 hover:opacity-50 hover:cursor-pointer hover:scale-[0.9]'>
+                            <button
+                                className='w-full p-1 text-white bg-[#ff0033] transition-all duration-200 hover:opacity-50 hover:cursor-pointer hover:scale-[0.9]'
+                                onClick={handleDeleteAccountBtnClick}
+                            >
                                 Delete account
                             </button>
                         </div>
@@ -367,7 +396,7 @@ export default function Dashboard() {
                             <div className='flex justify-between w-full'>
                                 <button
                                     className='px-2 py-1 text-white rounded bg-[#3e63dd]'
-                                    onClick={handlePasswordConfirmBtnClick}
+                                    onClick={() => handlePasswordConfirmBtnClick(profileOptions.requestMethod, profileOptions.dataObject)}
                                 >Confirm</button>
                                 <button
                                     className='px-2 py-1 text-white rounded bg-[#3e63dd]'
