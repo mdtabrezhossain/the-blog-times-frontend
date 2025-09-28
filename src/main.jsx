@@ -10,11 +10,12 @@ import { store } from './store';
 import "./index.css";
 import PageLoader from './components/page-loader.jsx';
 
-
 createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
-    <Suspense fallback={<PageLoader />}>
-      <RouterProvider router={router} />
-    </Suspense >
-  </Provider>
-)
+  <StrictMode>
+    <Provider store={store}>
+      <Suspense fallback={<PageLoader />}>
+        <RouterProvider router={router} />
+      </Suspense>
+    </Provider>
+  </StrictMode>
+);

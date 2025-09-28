@@ -1,30 +1,61 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import {
+    useEffect,
+    useRef,
+} from 'react';
+import {
+    useDispatch,
+    useSelector
+} from 'react-redux';
 import Card from '../components/blog-cards/Card.jsx';
+import {
+    updateBlogsReadCountAction,
+    updateBlogsReadAction
+} from '../store/slices/Feed.js';
 
 
 export default function Home() {
+    const blogsContainerFootRef = useRef(null);
     const theme = useSelector(state => state.themeReducer.theme);
-    const [allBlogs, setAllBlogs] = useState([]);
+    const blogsReadCount = useSelector(state => state.feedReducer.blogsReadCount);
+    const blogsRead = useSelector(state => state.feedReducer.blogsRead);
+    const dispatch = useDispatch();
     const isUserLoggedIn = localStorage.getItem("isLogin");
 
     async function showFeed() {
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}`, {
-            method: "GET",
+            method: "POST",
             credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ blogsReadCount })
         });
 
-        if (response.status == 401) {
-            localStorage.removeItem("isLogin");
-            localStorage.removeItem("username");
-        }
-
-        setAllBlogs(await response.json());
+        dispatch(updateBlogsReadAction(await response.json()));
     }
 
     useEffect(() => {
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                dispatch(updateBlogsReadCountAction());
+            }
+        });
+
+        if (blogsContainerFootRef.current) {
+            observer.observe(blogsContainerFootRef.current);
+        }
+
+        return () => {
+            if (blogsContainerFootRef.current) {
+                observer.unobserve(blogsContainerFootRef.current);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
         if (isUserLoggedIn === "true") showFeed();
-    }, [isUserLoggedIn]);
+    }, [blogsReadCount]);
+
 
     return (
         <div>
@@ -35,17 +66,23 @@ export default function Home() {
 
             {
                 isUserLoggedIn ? (
-                    <div className='grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] place-items-center gap-10 p-10 mt-25'>
-                        {
-                            allBlogs.map((blog, idx) =>
-                                <Card
-                                    key={idx}
-                                    title={blog.title}
-                                    imageSrc={`images/${blog.image}`}
-                                />
-                            )
-                        }
-                    </div>
+                    <>
+                        <div
+                            className='grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] place-items-center gap-10 p-10 mt-25'>
+                            {
+                                blogsRead.map((blog, idx) =>
+                                    <Card
+                                        key={idx}
+                                        blogId={blog._id}
+                                        authorName={blog.author.userName}
+                                        title={blog.title}
+                                        imageSrc={blog.imageUrl}
+                                    />
+                                )
+                            }
+                        </div>
+                        <div ref={blogsContainerFootRef} className='h-1 w-full'></div>
+                    </>
                 ) : null
             }
         </div>

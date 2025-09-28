@@ -198,11 +198,11 @@ export default function BigCard() {
                         />
                     </div>
                 </div>
-                {
-                    blogAuthorName === username ? (
-                        <>
-                            <div className="flex justify-between">
-                                <div className="text-black">Author: {username}</div>
+                <div className="flex justify-between">
+                    <div className="text-black">Author: {blogAuthorName}</div>
+                    {
+                        blogAuthorName === username ? (
+                            <>
                                 <div className="flex gap-5">
                                     <div
                                         className="flex gap-2 p-2 text-sm self-end text-white bg-[#3e63dd] cursor-pointer"
@@ -226,10 +226,10 @@ export default function BigCard() {
                                         Delete blog
                                     </div>
                                 </div>
-                            </div>
-                        </>
-                    ) : null
-                }
+                            </>
+                        ) : null
+                    }
+                </div>
                 <textarea
                     className="text-black text-4xl resize-none overflow-hidden outline-0"
                     ref={blogTitleRef}
