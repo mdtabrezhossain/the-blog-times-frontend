@@ -96,7 +96,7 @@ export default function Navbar() {
                             (
                                 <NavLink to={`/users/${username}/dashboard`} className='h-[30px] w-[30px] object-cover'>
                                     <img
-                                        src="images/default-pfp.jpg"
+                                        src="/images/default-pfp.jpg"
                                         className='rounded-full cursor-pointer'
                                     />
                                 </NavLink>
